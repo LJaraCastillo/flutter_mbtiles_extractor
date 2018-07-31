@@ -24,16 +24,20 @@ class _MyAppState extends State<MyApp> {
   Future<void> _extractMBTilesFile() async {
     ExtractResult extractResult;
     try {
+      //Get directory of the application. This way works best for iOS.
+      //The main point here is that the origin of the file is not relevant,
+      //as long as you have access to the file.
       Directory dir = await getApplicationDocumentsDirectory();
       print(dir.path);
       extractResult = await MBTilesExtractor.extractMBTilesFile(
         new ExtractRequest(
-          "${dir.path}/volcan_villarica.mbtiles",
-          desiredPath: "${dir.path}/tiles/araucania/",
-          requestPermissions: true,
-          removeAfterExtract: true,
-          stopOnError: true,
-          returnReference: true,
+          "${dir.path}/volcan_villarica.mbtiles", //This is the name of the file i was testing.
+          desiredPath: "${dir.path}/tiles/araucania/", //Example of final folder
+          requestPermissions: true, //Vital in android
+          removeAfterExtract: true, //Deletes the +.mbtiles file after the extraction is completed
+          stopOnError: true, //Stops is one tile could not be extracted
+          returnReference: true, //Returns the list of tiles once the extraction is completed
+          onlyReference: false, //If true the reference of tiles is returned but the extraction is not performed
         ),
       );
     } catch (ex, st) {

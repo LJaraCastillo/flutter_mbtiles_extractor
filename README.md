@@ -29,15 +29,15 @@ In the following example you can see how to realize a extraction of
 one file.
 
 ```dart
-ExtractResult extractResult = await MbtilesExtractor.extractMBTilesFile(
+ExtractResult extractResult = await MBTilesExtractor.extractMBTilesFile(
         new ExtractRequest(
-          "/storage/emulated/0/Download/volcan_villarica.mbtiles", //Your file. I will not upload this one.
-          desiredPath: "/storage/emulated/0/Download/tiles/", //The tiles will be extracted here
-          requestPermissions: true, //Request the writing permissions before extracting
-          removeAfterExtract: false, //Remove the mbtiles file after extracting
-          stopOnError: true, //If fails while extracting one tile, the extraction will be stopped.
-          onlyReference: false, //If true, the call will return the list of tiles of the db but not extract.
-          returnReference: true, //If true, the call will extract and return the list of tiles.
+          "${dir.path}/volcan_villarica.mbtiles", //This is the name of the file i was testing.
+          desiredPath: "${dir.path}/tiles/", //Example of final folder
+          requestPermissions: true, //This is for Android 6.0+
+          removeAfterExtract: true, //Deletes the +.mbtiles file after the extraction is completed
+          stopOnError: true, //Stops is one tile could not be extracted
+          returnReference: true, //Returns the list of tiles once the extraction is completed
+          onlyReference: false, //If true the reference of tiles is returned but the extraction is not performed
         ),
       );
 ```
