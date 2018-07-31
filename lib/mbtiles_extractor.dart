@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter_mbtiles_extractor/data/tile.dart';
 
-class MbtilesExtractor {
+class MBTilesExtractor {
   static const int RESULT_OK = 0;
   static const int RESULT_FILE_CORRUPT = 1;
   static const int RESULT_FILE_DOES_NOT_EXISTS = 2;
@@ -173,7 +173,7 @@ class ExtractResult {
   }
 
   bool isSuccessful() {
-    if (code == MbtilesExtractor.RESULT_OK) return true;
+    if (code == MBTilesExtractor.RESULT_OK) return true;
     return false;
   }
 

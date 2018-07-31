@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mbtiles_extractor/mbtiles_extractor.dart';
+import 'package:path_provider/path_provider.dart';
 
 void main() => runApp(new MyApp());
 
@@ -22,12 +24,14 @@ class _MyAppState extends State<MyApp> {
   Future<void> _extractMBTilesFile() async {
     ExtractResult extractResult;
     try {
-      extractResult = await MbtilesExtractor.extractMBTilesFile(
+      Directory dir = await getApplicationDocumentsDirectory();
+      print(dir.path);
+      extractResult = await MBTilesExtractor.extractMBTilesFile(
         new ExtractRequest(
-          "/storage/emulated/0/Download/volcan_villarica.mbtiles",
-          desiredPath: "/storage/emulated/0/Download/tiles/",
+          "${dir.path}/volcan_villarica.mbtiles",
+          desiredPath: "${dir.path}/tiles/araucania/",
           requestPermissions: true,
-          removeAfterExtract: false,
+          removeAfterExtract: true,
           stopOnError: true,
           returnReference: true,
         ),
