@@ -27,6 +27,7 @@ class _MyAppState extends State<MyApp> {
       //Get directory of the application. This way works best for iOS.
       //The main point here is that the origin of the file is not relevant,
       //as long as you have access to the file.
+      //Add path_provider dependency in example/pubspec.yaml to use the next function
       Directory dir = await getApplicationDocumentsDirectory();
       print(dir.path);
       extractResult = await MBTilesExtractor.extractMBTilesFile(
