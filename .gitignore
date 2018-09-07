@@ -1,3 +1,4 @@
+*.iml
 .DS_Store
 .dart_tool/
 
@@ -6,4 +7,5 @@
 pubspec.lock
 
 build/
-/.idea/*
+/.idea/
+/.vscode/
