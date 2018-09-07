@@ -9,6 +9,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   # cupertino_icons: ^0.1.2
   path_provider: ^0.4.1
+  path: ^1.6.2
   flutter_document_picker: ^1.0.0
   
 dev_dependencies:

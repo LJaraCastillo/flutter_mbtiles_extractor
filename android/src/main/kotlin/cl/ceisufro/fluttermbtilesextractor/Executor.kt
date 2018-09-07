@@ -89,7 +89,7 @@ class Executor private constructor(private var contextReference: WeakReference<C
                 format = it.value
         }
         val name = reader.metadata.tilesetName
-        val version = reader.metadata.tilesetVersion.toInt()
+        val version = reader.metadata.tilesetVersion
         val latitudeSW = reader.metadata.tilesetBounds.bottom
         val longitudeSW = reader.metadata.tilesetBounds.left
         val latitudeNE = reader.metadata.tilesetBounds.top

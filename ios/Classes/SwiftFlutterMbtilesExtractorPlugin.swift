@@ -13,14 +13,19 @@ public class SwiftFlutterMbtilesExtractorPlugin: NSObject, FlutterPlugin {
         if (call.method=="extractMBTilesFile"){
             let map = call.arguments as! NSDictionary
             let extractRequest = ExtractRequest.fromMap(map: map)
-            let extractResult = extractTilesFromFile(extractRequest: extractRequest)
-            result(extractResult.toMap())
+            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                let extractResult = self?.extractTilesFromFile(extractRequest: extractRequest)
+                DispatchQueue.main.async {
+                    result(extractResult?.toMap())
+                }
+            }
         }else if(call.method=="requestPermissions"){
             result(true)
         }else{
             result(FlutterMethodNotImplemented)
         }
     }
+    
     func extractTilesFromFile(extractRequest:ExtractRequest) -> ExtractResult {
         let fileManager = FileManager.default
         let pathToDB:String = extractRequest.pathToDB
@@ -34,6 +39,7 @@ public class SwiftFlutterMbtilesExtractorPlugin: NSObject, FlutterPlugin {
             if(reader != nil){
                 let tiles = reader!.getTiles()
                 var tilesList:[Tile]=[]
+                let metadata = getMetadataFromReader(reader: reader!)
                 if (!extractRequest.onlyReference) {
                     let url = URL(string:pathToDB)
                     let filename = url?.deletingPathExtension().lastPathComponent
@@ -57,7 +63,7 @@ public class SwiftFlutterMbtilesExtractorPlugin: NSObject, FlutterPlugin {
                                 print("\(error)")
                             }
                         }
-                        return ExtractResult(code: 0, data: filesDir!, tiles: tilesList)
+                        return ExtractResult(code: 0, data: filesDir!, metadata: metadata, tiles: tilesList)
                     } else {
                         return ExtractResult(code: 2, data: "Directory could not be created")
                     }
@@ -66,7 +72,7 @@ public class SwiftFlutterMbtilesExtractorPlugin: NSObject, FlutterPlugin {
                         let tile = tiles.next()
                         tilesList.append(Tile(zoom: tile.zoom, column: tile.column, row: tile.row))
                     }
-                    return ExtractResult(code: 0, data: "No extraction performed", tiles: tilesList)
+                    return ExtractResult(code: 0, data: "No extraction performed", metadata: metadata, tiles: tilesList)
                 }
             } else {
                 return ExtractResult(code: 1,data: "The file could not be read")
@@ -74,6 +80,24 @@ public class SwiftFlutterMbtilesExtractorPlugin: NSObject, FlutterPlugin {
         } else {
             return ExtractResult(code: 3, data: "MBTiles file does not exist!")
         }
+    }
+    
+    func getMetadataFromReader(reader: MBTilesReader)-> MBTilesMetadata {
+        let attribution = reader.getMetadata().getAttribution() ?? ""
+        let format = reader.getMetadata().getRequiredKeyValuePairs()["format"] ?? ""
+        let name = reader.getMetadata().getTileSetName() ?? ""
+        let version = reader.getMetadata().getTileSetVersion() ?? ""
+        let latitudeSW = reader.getMetadata().getTileSetBounds()?.bottom ?? 0.0
+        let longitudeSW = reader.getMetadata().getTileSetBounds()?.left ?? 0.0
+        let latitudeNE = reader.getMetadata().getTileSetBounds()?.top ?? 0.0
+        let longitudeNE = reader.getMetadata().getTileSetBounds()?.right ?? 0.0
+        let zoomMax = reader.getMetadata().getCustomKeyValuePairs()["maxzoom"] ?? "0.0"
+        let zoomMin = reader.getMetadata().getCustomKeyValuePairs()["minzoom"] ?? "0.0"
+        return MBTilesMetadata(attribution: attribution,name: name,
+                               format: format,version: version,
+                               latitudeSW: latitudeSW, longitudeSW: longitudeSW,
+                               latitudeNE: latitudeNE, longitudeNE: longitudeNE,
+                               zoomMax: Double(zoomMax)!, zoomMin: Double(zoomMin)!)
     }
     
     func createMainFolder(name:String, path:String) -> String?{

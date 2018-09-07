@@ -10,7 +10,7 @@ class MBTilesMetadata:NSObject{
     let attribution: String
     let name: String
     let format: String
-    let version: Int
+    let version: String
     let latitudeSW: Double
     let longitudeSW: Double
     let latitudeNE: Double
@@ -19,7 +19,7 @@ class MBTilesMetadata:NSObject{
     let zoomMin: Double
 
     init (attribution:String, name: String, format: String, 
-    version: Int, latitudeSW: Double, longitudeSW: Double, 
+    version: String, latitudeSW: Double, longitudeSW: Double,
     latitudeNE: Double,longitudeNE: Double,zoomMax: Double, zoomMin: Double) {
         self.attribution = attribution
         self.name = name

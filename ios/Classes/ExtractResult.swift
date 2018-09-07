@@ -9,7 +9,7 @@ import Foundation
 class ExtractResult:NSObject{
     let code:Int
     let data:String
-    let metadata:MBTilesMetadata?
+    var metadata:MBTilesMetadata? = nil
     var tiles:[Tile]
     
     init(code:Int, data:String) {
@@ -35,7 +35,7 @@ class ExtractResult:NSObject{
         return [
             "code":self.code,
             "data":self.data,
-            "metadata":self.metadata?.toMap(),
+            "metadata":self.metadata?.toMap() as Any,
             "tiles":Tile.toMapList(list: self.tiles),
         ]
     }

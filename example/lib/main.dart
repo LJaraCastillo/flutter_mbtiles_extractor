@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_document_picker/flutter_document_picker.dart';
 import 'package:flutter_mbtiles_extractor/mbtiles_extractor.dart';
+import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
 void main() => runApp(new MyApp());
@@ -14,7 +15,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _extractionResult = 'Unknown';
+  String _extractionStatus = 'Select a file to extract';
   bool _isBusy = false;
   File _selectedFile;
 
@@ -28,7 +29,7 @@ class _MyAppState extends State<MyApp> {
     List<Widget> widgets = [];
     widgets.addAll([
       Text(
-        'Extraction Status:\n $_extractionResult\n',
+        'Extraction Status:\n $_extractionStatus\n',
         textAlign: TextAlign.center,
       ),
       _isBusy
@@ -81,10 +82,11 @@ class _MyAppState extends State<MyApp> {
       //as long as you have access to the file.
       //Add path_provider dependency in example/pubspec.yaml to use the next function
       setState(() {
-        _extractionResult = "Extracting... Please wait!";
+        _extractionStatus = "Extracting... Please wait!";
         _isBusy = true;
       });
       Directory appDirectory = await getApplicationDocumentsDirectory();
+      print(_selectedFile.path);
       ExtractResult extractResult = await MBTilesExtractor.extractMBTilesFile(
         new ExtractRequest(
           _selectedFile.path,
@@ -115,30 +117,36 @@ class _MyAppState extends State<MyApp> {
       print(st);
     }
     setState(() {
-      _extractionResult = "$result";
+      _extractionStatus = "$result";
       _isBusy = false;
     });
   }
 
   void _launchFilePicker() async {
     File file;
+    String message = "Selection Cancelled";
     setState(() {
       this._isBusy = true;
     });
     try {
       FlutterDocumentPickerParams params = FlutterDocumentPickerParams(
         allowedFileExtensions: ["mbtiles"],
-        allowedUtiTypes: ["com.mbtileextractor.example.mbtiles"],
       );
-      final path = await FlutterDocumentPicker.openDocument(params: params);
-      if (path != null && path.isNotEmpty) {
-        file = File(path);
+      final filePath = await FlutterDocumentPicker.openDocument(params: params);
+      if (filePath != null && filePath.isNotEmpty) {
+        String extension = path.extension(filePath);
+        if (extension == ".mbtiles") {
+          file = File(filePath);
+          message = "Ready to extract";
+        } else {
+          message = "Selected file is not mbtiles";
+        }
       }
     } catch (ex, st) {
-      print(ex);
-      print(st);
+      message = "Selected file is not mbtiles";
     } finally {
       setState(() {
+        this._extractionStatus = message;
         this._selectedFile = file;
         this._isBusy = false;
       });
@@ -148,6 +156,7 @@ class _MyAppState extends State<MyApp> {
   void _clearSelectedFile() {
     setState(() {
       this._selectedFile = null;
+      this._extractionStatus = "File de-selected. Select a file to extract";
     });
   }
 }

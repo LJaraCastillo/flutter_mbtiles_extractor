@@ -1,7 +1,7 @@
 package cl.ceisufro.fluttermbtilesextractor
 
 class MBTilesMetadata(private val attribution: String, private val name: String,
-                      private val format: String, private val version: Int,
+                      private val format: String, private val version: String,
                       private val latitudeSW: Double, private val longitudeSW: Double,
                       private val latitudeNE: Double, private val longitudeNE: Double,
                       private val zoomMin: Double, private val zoomMax: Double) {

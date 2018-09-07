@@ -4,7 +4,7 @@ class MBTilesMetadata{
   String attribution;
   String name;
   String format;
-  int version;
+  String version;
   double latitudeSW;
   double longitudeSW;
   double latitudeNE;

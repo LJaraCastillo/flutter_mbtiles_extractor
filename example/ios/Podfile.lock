@@ -1,5 +1,7 @@
 PODS:
   - Flutter (1.0.0)
+  - flutter_document_picker (0.0.1):
+    - Flutter
   - flutter_mbtiles_extractor (0.0.1):
     - Flutter
   - path_provider (0.0.1):
@@ -7,12 +9,15 @@ PODS:
 
 DEPENDENCIES:
   - Flutter (from `.symlinks/flutter/ios`)
+  - flutter_document_picker (from `.symlinks/plugins/flutter_document_picker/ios`)
   - flutter_mbtiles_extractor (from `.symlinks/plugins/flutter_mbtiles_extractor/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
 
 EXTERNAL SOURCES:
   Flutter:
     :path: ".symlinks/flutter/ios"
+  flutter_document_picker:
+    :path: ".symlinks/plugins/flutter_document_picker/ios"
   flutter_mbtiles_extractor:
     :path: ".symlinks/plugins/flutter_mbtiles_extractor/ios"
   path_provider:
@@ -20,7 +25,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296
-  flutter_mbtiles_extractor: 576316bd11425f110ece01a1387d311973f5038e
+  flutter_document_picker: a9ccf881bc5ae0ec4b0864efe59c131aa0d25b43
+  flutter_mbtiles_extractor: 5942fb60456c0f18d9fb930dad5b3c49717998bc
   path_provider: 09407919825bfe3c2deae39453b7a5b44f467873
 
 PODFILE CHECKSUM: 7765ea4305eaab0b3dfd384c7de11902aa3195fd
