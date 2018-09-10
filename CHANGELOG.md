@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.3
+
+* Revision on imports
+
 ## 0.0.2
 
 * Added asynchronous working so the extraction doesn't freeze the UI while working.

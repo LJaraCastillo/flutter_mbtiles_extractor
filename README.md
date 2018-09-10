@@ -50,7 +50,7 @@ result and could be checked using the **isSuccessful()** function in
 **ExtractResult** class or could be done manually.
 
 ```dart
-    if (extractResult.code == MbtilesExtractor.RESULT_FILE_CORRUPT) {
+    if (extractResult.code == ExtractResult.RESULT_FILE_CORRUPT) {
       //The file could not be read because it was damaged
     }
 ```
@@ -61,7 +61,7 @@ path to the folder where the tiles are stored.
 ```dart
     if (extractResult.isSuccessful()) {
         var folder= extractResult.data;
-        //Do some stuff with this value.
+        //Do something
     }
 ```
 
@@ -84,10 +84,3 @@ And the Android version:
 **NOTE**: I included a compiled .jar of this library since it don't
 exist in **Maven** or **JitPack** (at least i couldn't find it).
 Consider update it if exists a new version.
-
-
-
-
-
-
-

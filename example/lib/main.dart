@@ -142,7 +142,7 @@ class _MyAppState extends State<MyApp> {
           message = "Selected file is not mbtiles";
         }
       }
-    } catch (ex, st) {
+    } catch (ex) {
       message = "Selected file is not mbtiles";
     } finally {
       setState(() {

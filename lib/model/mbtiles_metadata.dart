@@ -1,5 +1,3 @@
-part of mbtiles_extractor;
-
 class MBTilesMetadata {
   String attribution;
   String name;
