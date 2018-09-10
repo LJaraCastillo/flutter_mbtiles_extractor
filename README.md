@@ -1,9 +1,11 @@
 # flutter_mbtiles_extractor
 
 Basic plugin to extract the data (png tiles) from an .mbtiles file and
-automatically create the folder structure (../folder_name/z/x/y.png).
+automatically create the folder structure (../folder_name/{z}/{x}/{y}.png).
 
-#### Installation
+![example_gif](https://raw.githubusercontent.com/LJaraCastillo/flutter_mbtiles_extractor/master/pictures/example.gif "Example GIF")
+
+## Installation
 
 Import the dependency in the dart file you will use it.
 
@@ -23,7 +25,7 @@ of the device. In your project add the following lines to your
 Remember that on API 23 and later you need to ask to the user to grant
 access for this permissions.
 
-#### How to use
+## How to use
 
 In the following example you can see how to realize a extraction of
 one file.
@@ -63,7 +65,7 @@ path to the folder where the tiles are stored.
     }
 ```
 
-#### Extra info
+## Extra info
 
 This plugin uses the extracted folder to generate a Google Maps like map
 so you could make a project that uses offline maps.

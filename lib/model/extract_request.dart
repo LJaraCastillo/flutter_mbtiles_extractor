@@ -67,34 +67,6 @@ class ExtractRequest {
     this.returnReference = map['returnReference'];
   }
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is ExtractRequest &&
-          runtimeType == other.runtimeType &&
-          pathToDB == other.pathToDB &&
-          desiredPath == other.desiredPath &&
-          requestPermissions == other.requestPermissions &&
-          removeAfterExtract == other.removeAfterExtract &&
-          stopOnError == other.stopOnError &&
-          onlyReference == other.onlyReference &&
-          returnReference == other.returnReference;
-
-  @override
-  int get hashCode =>
-      pathToDB.hashCode ^
-      desiredPath.hashCode ^
-      requestPermissions.hashCode ^
-      removeAfterExtract.hashCode ^
-      stopOnError.hashCode ^
-      onlyReference.hashCode ^
-      returnReference.hashCode;
-
-  @override
-  String toString() {
-    return 'ExtractRequest{pathToDB: $pathToDB, desiredPath: $desiredPath, requestPermissions: $requestPermissions, removeAfterExtract: $removeAfterExtract, stopOnError: $stopOnError, onlyReference: $onlyReference, returnReference: $returnReference}';
-  }
-
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
       'pathToDB': this.pathToDB != null ? this.pathToDB : "",

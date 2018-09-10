@@ -24,6 +24,7 @@ class MBTilesExtractor {
 
   ///Some tile was impossible to read or write in its respective file.
   static const int RESULT_TILE_EXTRACTION_ERROR = 4;
+
   static const MethodChannel _channel =
       const MethodChannel('flutter_mbtiles_extractor');
 

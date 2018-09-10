@@ -21,23 +21,6 @@ class Tile {
     this.row = map['row'];
   }
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Tile &&
-          runtimeType == other.runtimeType &&
-          zoom == other.zoom &&
-          column == other.column &&
-          row == other.row;
-
-  @override
-  int get hashCode => zoom.hashCode ^ column.hashCode ^ row.hashCode;
-
-  @override
-  String toString() {
-    return 'Tile{zoom: $zoom, column: $column, row: $row}';
-  }
-
   Map<String, dynamic> toMap() {
     return {
       'zoom': this.zoom,
