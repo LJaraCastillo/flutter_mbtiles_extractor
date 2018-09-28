@@ -1,6 +1,6 @@
 name: flutter_mbtiles_extractor
 description: A flutter plugin to extract the map tiles from an .mbtiles file.
-version: 0.0.3
+version: 0.0.4
 author: Luis Andrés Jara Castillo <luisandres.jaracastillo@gmail.com>
 homepage: https://github.com/LJaraCastillo/flutter_mbtiles_extractor
 

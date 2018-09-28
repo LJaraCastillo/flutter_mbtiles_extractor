@@ -81,30 +81,35 @@ class Executor private constructor(private var contextReference: WeakReference<C
         }
     }
 
-    private fun getMetadataFromReader(reader: MBTilesReader): MBTilesMetadata {
-        val attribution = reader.metadata.attribution
-        var format = ""
-        reader.metadata.requiredKeyValuePairs.forEach {
-            if (it.key == "format")
-                format = it.value
-        }
-        val name = reader.metadata.tilesetName
-        val version = reader.metadata.tilesetVersion
-        val latitudeSW = reader.metadata.tilesetBounds.bottom
-        val longitudeSW = reader.metadata.tilesetBounds.left
-        val latitudeNE = reader.metadata.tilesetBounds.top
-        val longitudeNE = reader.metadata.tilesetBounds.right
-        var zoomMax = 0.0
-        var zoomMin = 0.0
-        reader.metadata.customKeyValuePairs.forEach {
-            if (it.key.equals("maxzoom")) {
-                zoomMax = it.value.toDouble()
-            } else if (it.key.equals("minzoom")) {
-                zoomMin = it.value.toDouble()
+    private fun getMetadataFromReader(reader: MBTilesReader): MBTilesMetadata? {
+        try{
+            val attribution = reader.metadata.attribution
+            var format = ""
+            reader.metadata.requiredKeyValuePairs.forEach {
+                if (it.key == "format")
+                    format = it.value
             }
+            val name = reader.metadata.tilesetName
+            val version = reader.metadata.tilesetVersion
+            val latitudeSW = reader.metadata.tilesetBounds.bottom
+            val longitudeSW = reader.metadata.tilesetBounds.left
+            val latitudeNE = reader.metadata.tilesetBounds.top
+            val longitudeNE = reader.metadata.tilesetBounds.right
+            var zoomMax = 0.0
+            var zoomMin = 0.0
+            reader.metadata.customKeyValuePairs.forEach {
+                if (it.key.equals("maxzoom")) {
+                    zoomMax = it.value.toDouble()
+                } else if (it.key.equals("minzoom")) {
+                    zoomMin = it.value.toDouble()
+                }
+            }
+            return MBTilesMetadata(attribution, name, format, version,
+                    latitudeSW, longitudeSW, latitudeNE, longitudeNE, zoomMin, zoomMax)
+        }catch(e :Exception){
+            e.printStackTrace()
         }
-        return MBTilesMetadata(attribution, name, format, version,
-                latitudeSW, longitudeSW, latitudeNE, longitudeNE, zoomMin, zoomMax)
+        return null;
     }
 
     private fun createMainFolder(filename: String, path: String): File? {

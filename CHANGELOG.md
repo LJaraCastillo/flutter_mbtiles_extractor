@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.4
+
+* Quick fix. A crash was produced when extracting the metadata of an incomplete mbtiles file.
+
 ## 0.0.3
 
 * Revision on imports

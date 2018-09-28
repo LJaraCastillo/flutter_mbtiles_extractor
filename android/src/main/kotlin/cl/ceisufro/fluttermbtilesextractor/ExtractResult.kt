@@ -9,7 +9,7 @@ class ExtractResult(val code: Int, val data: String) {
         this.tiles = tiles
     }
 
-    constructor(code: Int, data: String, mbTilesMetadata: MBTilesMetadata, tiles: ArrayList<Tile>) : this(code, data) {
+    constructor(code: Int, data: String, mbTilesMetadata: MBTilesMetadata?, tiles: ArrayList<Tile>) : this(code, data) {
         this.tiles = tiles
         this.mbtilesMetadata = mbTilesMetadata
     }
