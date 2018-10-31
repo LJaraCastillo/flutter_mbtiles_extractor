@@ -45,6 +45,17 @@ class ExtractRequest {
   ///The default value is false.
   bool returnReference;
 
+  ///Tiling schema used when exporting. The [MBTiles Specification]
+  ///(https://github.com/mapbox/mbtiles-spec/blob/master/1.3/spec.md) stores
+  ///tiles that follows the Tile Map Service (TMS) Specification, where the Y
+  ///axis is reversed from the "XYZ" coordinate system commonly used in the URLs
+  ///to request individual tiles. Use the [Schema.XYZ] to flip the y axis back
+  ///from the TMS schema i MBTiles til "XYZ" coordinate system, typically used by "slippy maps"
+  ///like in OpenStreetMap and Leaflet.
+  ///
+  ///The default value is [Schema.TMS] (y axis is not flipped).
+  Schema schema;
+
   ExtractRequest(
     this.pathToDB, {
     this.desiredPath = "",
@@ -53,6 +64,7 @@ class ExtractRequest {
     this.stopOnError = true,
     this.onlyReference = false,
     this.returnReference = false,
+    this.schema = Schema.TMS,
   });
 
   ExtractRequest.fromMap(Map<String, dynamic> map) {
@@ -63,6 +75,7 @@ class ExtractRequest {
     this.stopOnError = map['stopOnError'];
     this.onlyReference = map['onlyReference'];
     this.returnReference = map['returnReference'];
+    this.schema = Schema.values[map['schema']];
   }
 
   Map<String, dynamic> toMap() {
@@ -74,7 +87,21 @@ class ExtractRequest {
       'stopOnError': this.stopOnError,
       'onlyReference': this.onlyReference,
       'returnReference': this.returnReference,
+      'schema': this.schema.index,
     };
     return map;
   }
+
 }
+
+enum Schema {
+  /// Tile Map Service tiling schema.
+  /// Maps [z,y,x] = [tile_zoom, tile_row, tile_column] (default)
+  TMS,
+  /// Commonly used "XYZ" schema by "slippy maps".
+  /// Maps [z,y,x] = [tile_zoom, (2 * tile_zoom - 1) - tile_row, tile_column]
+  /// (y coordinate is flipped)
+  ///
+  XYZ,
+}
+

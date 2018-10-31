@@ -53,7 +53,7 @@ class Executor private constructor(private var contextReference: WeakReference<C
                     if (filesDir != null) {
                         while (tiles.hasNext()) {
                             val tile = tiles.next()
-                            if (!saveTileIntoFile(filesDir, tile) && extractRequest.stopOnError)
+                            if (!saveTileIntoFile(extractRequest.schema, filesDir, tile) && extractRequest.stopOnError)
                                 return ExtractResult(4, "Failed to extract tiles")
                             if (extractRequest.returnReference)
                                 tilesList.add(Tile(tile.zoom, tile.column, tile.row))
@@ -126,11 +126,11 @@ class Executor private constructor(private var contextReference: WeakReference<C
         return null
     }
 
-    private fun saveTileIntoFile(filesDir: File, tile: TileIterator.Tile): Boolean {
+    private fun saveTileIntoFile(schema: Int, filesDir: File, tile: TileIterator.Tile): Boolean {
         val sep = File.separator
-        val tilePath = "${filesDir.path}$sep${tile.zoom}$sep" +
-                "${tile.column}"
-        val filename = "${tile.row}.png"
+        val tilePath = "${filesDir.path}$sep${tile.zoom}$sep${tile.column}"
+        val row = (if (schema == 0) tile.row else flip(tile))
+        val filename = "$row.png"
         val dir = File(tilePath)
         if (dir.exists() || dir.mkdirs()) {
             val file = File(dir, filename)
@@ -148,6 +148,10 @@ class Executor private constructor(private var contextReference: WeakReference<C
             }
         }
         return false
+    }
+
+    private fun flip(tile: TileIterator.Tile): Int {
+        return (Math.pow(2.0, tile.zoom.toDouble()) - 1.0).toInt() - tile.row
     }
 
 }

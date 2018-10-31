@@ -7,7 +7,8 @@ class ExtractRequest(val pathToDB: String,
                      val removeAfterExtract: Boolean,
                      val stopOnError: Boolean,
                      val onlyReference: Boolean,
-                     val returnReference: Boolean) {
+                     val returnReference: Boolean,
+                     val schema: Int) {
     companion object {
         fun fromMap(map: Map<String, Any>): ExtractRequest {
             val pathToDB = map["pathToDB"] as String
@@ -17,7 +18,8 @@ class ExtractRequest(val pathToDB: String,
             val stopOnError = map["stopOnError"] as Boolean
             val onlyReference = map["onlyReference"] as Boolean
             val returnReference = map["returnReference"] as Boolean
-            return ExtractRequest(pathToDB, desiredPath, requestPermissions, removeAfterExtract, stopOnError, onlyReference, returnReference)
+            val schema = map["schema"] as Int
+            return ExtractRequest(pathToDB, desiredPath, requestPermissions, removeAfterExtract, stopOnError, onlyReference, returnReference, schema)
         }
     }
 
@@ -30,6 +32,7 @@ class ExtractRequest(val pathToDB: String,
         map.put("stopOnError", stopOnError)
         map.put("onlyReference", onlyReference)
         map.put("returnReference", returnReference)
+        map.put("schema", schema)
         return map
     }
 }
