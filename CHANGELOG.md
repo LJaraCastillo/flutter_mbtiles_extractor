@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.5
+
+* Added support for XYZ or TMS tile extraction schema. (Thanks to @kengu)
+* Example updated to display the schema update. (Thanks to @kengu)
+* Updated example dependencies.
+
 ## 0.0.4
 
 * Quick fix. A crash was produced when extracting the metadata of an incomplete mbtiles file.
