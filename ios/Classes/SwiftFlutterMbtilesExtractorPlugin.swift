@@ -47,7 +47,7 @@ public class SwiftFlutterMbtilesExtractorPlugin: NSObject, FlutterPlugin {
                     if (filesDir != nil) {
                         while (tiles.hasNext()) {
                             let tile = tiles.next()
-                            if (!saveTileIntoFile(filesDir: filesDir!, tile: tile) && extractRequest.stopOnError){
+                            if (!saveTileIntoFile(extractRequest.schema. filesDir: filesDir!, tile: tile) && extractRequest.stopOnError){
                                 return ExtractResult(code: 4,data: "Failed to extract tiles")
                             }
                             if (extractRequest.returnReference){
@@ -123,10 +123,11 @@ public class SwiftFlutterMbtilesExtractorPlugin: NSObject, FlutterPlugin {
         return nil
     }
     
-    func saveTileIntoFile(filesDir:String, tile:TileData) -> Bool{
+    func saveTileIntoFile(schema:Int, filesDir:String, tile:TileData) -> Bool{
         let fileManager = FileManager.default
         let tilePath = "\(filesDir)/\(tile.zoom)/\(tile.column)"
-        let filename = "\(tile.row).png"
+        let row = (schema == 0 ? tile.row : flip(tile))
+        let filename = "\(row).png"
         if(!fileManager.fileExists(atPath:tilePath)){
             do {
                 try fileManager.createDirectory(atPath: tilePath, withIntermediateDirectories: true, attributes: nil)
@@ -137,5 +138,9 @@ public class SwiftFlutterMbtilesExtractorPlugin: NSObject, FlutterPlugin {
         }
         let file = tilePath+"/"+filename
         return fileManager.createFile(atPath: file, contents: tile.data, attributes: nil)
+    }
+
+    func flip(tile: TileIterator.Tile): Int {
+        return Int(pow(2.0, Double(tile.zoom)) - 1.0) - tile.row
     }
 }

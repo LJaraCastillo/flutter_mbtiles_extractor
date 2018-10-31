@@ -6,6 +6,7 @@
 .pub/
 pubspec.lock
 
+gen/
 build/
-/.idea/
-/.vscode/
+.idea/
+.vscode/

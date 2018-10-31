@@ -101,8 +101,10 @@ class _MyAppState extends State<MyApp> {
           //Stops is one tile could not be extracted
           returnReference: true,
           //Returns the list of tiles once the extraction is completed
-          onlyReference:
-              false, //If true the reference of tiles is returned but the extraction is not performed
+          onlyReference: false,
+          //If true the reference of tiles is returned but the extraction is not performed
+          schema: Schema.XYZ,
+          //Flip y-axis to commonly used xyz (slippy map) tiling format.
         ),
       );
       result = """

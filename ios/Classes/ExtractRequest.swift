@@ -14,7 +14,8 @@ class ExtractRequest:NSObject{
     let stopOnError:Bool
     let onlyReference:Bool
     let returnReference:Bool
-    
+    let schema:Int
+
     init(pathToDB:String,desiredPath:String,requestPermissions:Bool,removeAfterExtract:Bool,stopOnError:Bool,onlyReference:Bool,returnReference:Bool) {
         self.pathToDB = pathToDB
         self.desiredPath=desiredPath
@@ -23,6 +24,7 @@ class ExtractRequest:NSObject{
         self.stopOnError=stopOnError
         self.onlyReference=onlyReference
         self.returnReference=returnReference
+        self.schema=schema
     }
     
     static func fromMap(map:NSDictionary) -> ExtractRequest{
@@ -33,6 +35,7 @@ class ExtractRequest:NSObject{
         let stopOnError:Bool = map["stopOnError"] as! Bool
         let onlyReference:Bool = map["onlyReference"] as! Bool
         let returnReference:Bool = map["returnReference"] as! Bool
+        let schema:Int= map["schema"] as! Bool
         return ExtractRequest(
             pathToDB: pathToDB,
             desiredPath: desiredPath,
@@ -40,7 +43,8 @@ class ExtractRequest:NSObject{
             removeAfterExtract: removeAfterExtract,
             stopOnError: stopOnError,
             onlyReference: onlyReference,
-            returnReference: returnReference)
+            returnReference: returnReference,
+            schema: schema)
     }
     
     func toMap() -> NSDictionary{
@@ -52,6 +56,7 @@ class ExtractRequest:NSObject{
             "stopOnError":self.stopOnError,
             "onlyReference":self.onlyReference,
             "returnReference":self.returnReference,
+            "schema":self.schema,
         ]
     }
 }
