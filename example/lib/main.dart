@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -18,6 +19,8 @@ class _MyAppState extends State<MyApp> {
   String _extractionStatus = 'Select a file to extract';
   bool _isBusy = false;
   File _selectedFile;
+  Set<String> inProgress = HashSet<String>();
+  ValueNotifier progress = ValueNotifier<double>(0.0);
 
   @override
   void initState() {
@@ -35,7 +38,17 @@ class _MyAppState extends State<MyApp> {
       _isBusy
           ? Padding(
               padding: EdgeInsets.all(16.0),
-              child: LinearProgressIndicator(),
+              child: AnimatedBuilder(
+                animation: progress,
+                builder: (context, _) {
+                  return Container(
+                    child: LinearProgressIndicator(
+                      value: progress.value,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.redAccent),
+                    ),
+                  );
+                },
+              ),
             )
           : MaterialButton(
               onPressed: () {
@@ -74,8 +87,20 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
+  void _startProgress() {
+    _isBusy = true;
+    progress.value = null;
+  }
+
+  void _stopProgress() {
+    _isBusy = false;
+    progress.value = null;
+  }
+
+
   Future<void> _extractMBTilesFile() async {
     String result;
+    StreamSubscription<dynamic> subscription;
     try {
       //Get directory of the application. This way works best for iOS.
       //The main point here is that the origin of the file is not relevant,
@@ -83,8 +108,18 @@ class _MyAppState extends State<MyApp> {
       //Add path_provider dependency in example/pubspec.yaml to use the next function
       setState(() {
         _extractionStatus = "Extracting... Please wait!";
-        _isBusy = true;
+        _startProgress();
       });
+      subscription = MBTilesExtractor.onProgress().listen((dynamic event) {
+        var percent = event['progress'] / event['total'];
+        if (percent == 1.0) {
+          _stopProgress();
+        } else {
+          progress.value = percent;
+        }
+        print("$event");
+      });
+
       Directory appDirectory = await getApplicationDocumentsDirectory();
       print(_selectedFile.path);
       ExtractResult extractResult = await MBTilesExtractor.extractMBTilesFile(
@@ -120,15 +155,18 @@ class _MyAppState extends State<MyApp> {
     }
     setState(() {
       _extractionStatus = "$result";
-      _isBusy = false;
+      _stopProgress();
     });
+
+    subscription?.cancel();
+
   }
 
   void _launchFilePicker() async {
     File file;
     String message = "Selection Cancelled";
     setState(() {
-      this._isBusy = true;
+      _startProgress();
     });
     try {
       FlutterDocumentPickerParams params = FlutterDocumentPickerParams(
@@ -150,7 +188,7 @@ class _MyAppState extends State<MyApp> {
       setState(() {
         this._extractionStatus = message;
         this._selectedFile = file;
-        this._isBusy = false;
+        this._stopProgress();
       });
     }
   }
