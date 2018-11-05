@@ -1,12 +1,16 @@
 import Flutter
 import UIKit
 
-public class SwiftFlutterMbtilesExtractorPlugin: NSObject, FlutterPlugin {
-    
+public class SwiftFlutterMbtilesExtractorPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
+
     public static func register(with registrar: FlutterPluginRegistrar) {
-        let channel = FlutterMethodChannel(name: "flutter_mbtiles_extractor", binaryMessenger: registrar.messenger())
+        let methodChannel = FlutterMethodChannel(name: "flutter_mbtiles_extractor",
+                binaryMessenger: registrar.messenger())
         let instance = SwiftFlutterMbtilesExtractorPlugin()
-        registrar.addMethodCallDelegate(instance, channel: channel)
+        registrar.addMethodCallDelegate(instance, channel: methodChannel)
+        let eventChannel = FlutterEventChannel(name: "flutter_mbtiles_extractor_progress",
+                binaryMessenger: registrar.messenger())
+        eventChannel.setStreamHandler(instance)
     }
     
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -25,6 +29,31 @@ public class SwiftFlutterMbtilesExtractorPlugin: NSObject, FlutterPlugin {
             result(FlutterMethodNotImplemented)
         }
     }
+
+    private var sinks:[FlutterEventSink]=[]
+
+    public func onListen(withArguments arguments: Any?,
+                           eventSink: @escaping FlutterEventSink) -> FlutterError? {
+        sinks.append(eventSink)
+        return nil
+    }
+
+    public func onCancel(withArguments arguments: Any?) -> FlutterError? {
+        sinks.forEach { it in
+            it.endOfStream()
+        }
+        sinks.removeAll()
+        return nil
+    }
+
+    func notify(progress: Int, total: Int) {
+        val values = [String : Int]()
+        values["total"] = total
+        values["progress"] = progress
+        sinks.forEach { it in
+            it.success(values)
+        }
+    }
     
     func extractTilesFromFile(extractRequest:ExtractRequest) -> ExtractResult {
         let fileManager = FileManager.default
@@ -38,6 +67,7 @@ public class SwiftFlutterMbtilesExtractorPlugin: NSObject, FlutterPlugin {
             }
             if(reader != nil){
                 let tiles = reader!.getTiles()
+                let count = reader!.getTileCount()
                 var tilesList:[Tile]=[]
                 let metadata = getMetadataFromReader(reader: reader!)
                 if (!extractRequest.onlyReference) {
@@ -52,6 +82,7 @@ public class SwiftFlutterMbtilesExtractorPlugin: NSObject, FlutterPlugin {
                             }
                             if (extractRequest.returnReference){
                                 tilesList.append(Tile(zoom: tile.zoom, column: tile.column, row: tile.row))
+                                notify(tilesList.count, count)
                             }
                         }
                         tiles.close()
@@ -81,7 +112,7 @@ public class SwiftFlutterMbtilesExtractorPlugin: NSObject, FlutterPlugin {
             return ExtractResult(code: 3, data: "MBTiles file does not exist!")
         }
     }
-    
+
     func getMetadataFromReader(reader: MBTilesReader)-> MBTilesMetadata {
         let attribution = reader.getMetadata().getAttribution() ?? ""
         let format = reader.getMetadata().getRequiredKeyValuePairs()["format"] ?? ""
