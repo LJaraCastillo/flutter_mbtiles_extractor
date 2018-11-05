@@ -109,6 +109,7 @@ class Executor private constructor(
     }
 
     private fun getTileCount(pathToDB: File): Int {
+        var count =  0
         val cnn = SQLHelper.establishConnection(pathToDB)
         val rs = SQLHelper.executeQuery(cnn, "SELECT count(*) FROM tiles")
         while (rs.next()) {
