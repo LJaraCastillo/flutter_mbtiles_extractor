@@ -45,6 +45,7 @@ class FlutterMbtilesExtractorPlugin(private val activity: Activity)
         sinks.forEach {
             it?.endOfStream()
         }
+        sinks.clear()
     }
 
 
