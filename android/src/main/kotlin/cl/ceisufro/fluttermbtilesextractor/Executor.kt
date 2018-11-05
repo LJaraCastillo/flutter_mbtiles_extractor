@@ -6,30 +6,48 @@ import android.graphics.BitmapFactory
 import android.os.AsyncTask
 import com.myroutes.mbtiles4j.MBTilesReadException
 import com.myroutes.mbtiles4j.MBTilesReader
+import com.myroutes.mbtiles4j.SQLHelper
 import com.myroutes.mbtiles4j.TileIterator
+import io.flutter.plugin.common.EventChannel
 import java.io.File
 import java.io.FileOutputStream
 import java.lang.ref.WeakReference
 
-class Executor private constructor(private var contextReference: WeakReference<Context>,
-                                   private var extractRequest: ExtractRequest,
-                                   private var executionCallback: ExecutionCallback) : AsyncTask<Void, Void, ExtractResult>() {
+class Executor private constructor(
+        private var contextReference: WeakReference<Context>,
+        private var extractRequest: ExtractRequest,
+        private var executionCallback: ExecutionCallback,
+        private var sinks: List<EventChannel.EventSink?>
+) : AsyncTask<Void, Void, ExtractResult>() {
 
     companion object {
-        fun executeExtractAsync(contextReference: WeakReference<Context>, extractRequest: ExtractRequest, executionCallback: ExecutionCallback): Executor {
-            val executor = Executor(contextReference, extractRequest, executionCallback)
+        fun executeExtractAsync(
+                contextReference: WeakReference<Context>,
+                extractRequest: ExtractRequest,
+                executionCallback: ExecutionCallback,
+                sinks: MutableList<EventChannel.EventSink?>): Executor {
+            val executor = Executor(contextReference, extractRequest, executionCallback, sinks)
             executor.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
             return executor
         }
     }
 
     override fun doInBackground(vararg params: Void?): ExtractResult {
-        return extractTilesFromFile();
+        return extractTilesFromFile()
     }
 
     override fun onPostExecute(result: ExtractResult?) {
         super.onPostExecute(result)
-        this.executionCallback.onTaskFinish(result);
+        this.executionCallback.onTaskFinish(result)
+    }
+
+    private fun notify(progress: Int, total: Int) {
+        val values = mutableMapOf<String, Int>()
+        values["total"] = total
+        values["progress"] = progress
+        sinks.forEach {
+            it?.success(values)
+        }
     }
 
     private fun extractTilesFromFile(): ExtractResult {
@@ -38,9 +56,15 @@ class Executor private constructor(private var contextReference: WeakReference<C
             return ExtractResult(2, "Storage permissions not granted")
         val dbFile = File(extractRequest.pathToDB)
         if (extractRequest.pathToDB.isNotEmpty() && dbFile.exists()) {
+            var count =  0
+            try {
+                count = getTileCount(dbFile)
+            } catch (e: MBTilesReadException) {
+                e.printStackTrace()
+            }
             var reader: MBTilesReader? = null
             try {
-                reader = MBTilesReader(File(extractRequest.pathToDB))
+                reader = MBTilesReader(dbFile)
             } catch (e: MBTilesReadException) {
                 e.printStackTrace()
             }
@@ -57,6 +81,9 @@ class Executor private constructor(private var contextReference: WeakReference<C
                                 return ExtractResult(4, "Failed to extract tiles")
                             if (extractRequest.returnReference)
                                 tilesList.add(Tile(tile.zoom, tile.column, tile.row))
+
+                            notify(tilesList.size, count)
+
                         }
                         tiles.close()
                         reader.close()
@@ -79,6 +106,16 @@ class Executor private constructor(private var contextReference: WeakReference<C
         } else {
             return ExtractResult(3, "MBTiles file path is empty")
         }
+    }
+
+    private fun getTileCount(pathToDB: File): Int {
+        val cnn = SQLHelper.establishConnection(pathToDB)
+        val rs = SQLHelper.executeQuery(cnn, "SELECT count(*) FROM tiles")
+        while (rs.next()) {
+            count = rs.getInt(1)
+        }
+        cnn.close()
+        return count
     }
 
     private fun getMetadataFromReader(reader: MBTilesReader): MBTilesMetadata? {
