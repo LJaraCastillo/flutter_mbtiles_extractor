@@ -170,7 +170,8 @@ class _MyAppState extends State<MyApp> {
     });
     try {
       FlutterDocumentPickerParams params = FlutterDocumentPickerParams(
-        allowedFileExtensions: ["mbtiles"],
+        allowedFileExtensions: ['mbtiles'],
+        allowedUtiTypes: ['cl.ceisufro.fluttermbtilesextractor.mbtiles'],
       );
       final filePath = await FlutterDocumentPicker.openDocument(params: params);
       if (filePath != null && filePath.isNotEmpty) {

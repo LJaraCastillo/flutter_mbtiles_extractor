@@ -39,8 +39,8 @@ class MBTilesReader:NSObject{
         return TileIterator(resultSet: resultSet!)
     }
 
-    func getTileCount() -> Int{
-        let count:Int = 0
+    func getTileCount() -> Int32 {
+        var count:Int32 = 0
         let sql:String = "SELECT count(*) FROM tiles;"
         let resultSet = SQLHelper.executeQuery(db: dbConnection, sql: sql)
         while(sqlite3_step(resultSet)==SQLITE_ROW){
@@ -48,5 +48,4 @@ class MBTilesReader:NSObject{
         }
         return count
     }
-
 }

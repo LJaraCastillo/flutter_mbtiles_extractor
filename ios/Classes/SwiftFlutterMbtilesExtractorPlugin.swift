@@ -1,16 +1,12 @@
 import Flutter
 import UIKit
 
-public class SwiftFlutterMbtilesExtractorPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
-
+public class SwiftFlutterMbtilesExtractorPlugin: NSObject, FlutterPlugin {
+    
     public static func register(with registrar: FlutterPluginRegistrar) {
-        let methodChannel = FlutterMethodChannel(name: "flutter_mbtiles_extractor",
-                binaryMessenger: registrar.messenger())
+        let channel = FlutterMethodChannel(name: "flutter_mbtiles_extractor", binaryMessenger: registrar.messenger())
         let instance = SwiftFlutterMbtilesExtractorPlugin()
-        registrar.addMethodCallDelegate(instance, channel: methodChannel)
-        let eventChannel = FlutterEventChannel(name: "flutter_mbtiles_extractor_progress",
-                binaryMessenger: registrar.messenger())
-        eventChannel.setStreamHandler(instance)
+        registrar.addMethodCallDelegate(instance, channel: channel)
     }
     
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -30,7 +26,7 @@ public class SwiftFlutterMbtilesExtractorPlugin: NSObject, FlutterPlugin, Flutte
         }
     }
 
-    private var sinks:[FlutterEventSink]=[]
+    private var sinks: [FlutterEventSink] = []
 
     public func onListen(withArguments arguments: Any?,
                            eventSink: @escaping FlutterEventSink) -> FlutterError? {
@@ -39,22 +35,19 @@ public class SwiftFlutterMbtilesExtractorPlugin: NSObject, FlutterPlugin, Flutte
     }
 
     public func onCancel(withArguments arguments: Any?) -> FlutterError? {
-        sinks.forEach { it in
-            it.endOfStream()
-        }
         sinks.removeAll()
         return nil
     }
 
-    func notify(progress: Int, total: Int) {
-        val values = [String : Int]()
-        values["total"] = total
-        values["progress"] = progress
-        sinks.forEach { it in
-            it.success(values)
+    func notify(progress: Int32, total: Int32) {
+        var value = [NSString : NSNumber]()
+        value["total"] = NSNumber(value: total)
+        value["progress"] = NSNumber(value: progress)
+        for case let it in sinks {
+            it(value)
         }
     }
-    
+
     func extractTilesFromFile(extractRequest:ExtractRequest) -> ExtractResult {
         let fileManager = FileManager.default
         let pathToDB:String = extractRequest.pathToDB
@@ -77,12 +70,12 @@ public class SwiftFlutterMbtilesExtractorPlugin: NSObject, FlutterPlugin, Flutte
                     if (filesDir != nil) {
                         while (tiles.hasNext()) {
                             let tile = tiles.next()
-                            if (!saveTileIntoFile(extractRequest.schema. filesDir: filesDir!, tile: tile) && extractRequest.stopOnError){
+                            if (!saveTileIntoFile(schema: extractRequest.schema, filesDir: filesDir!, tile: tile) && extractRequest.stopOnError){
                                 return ExtractResult(code: 4,data: "Failed to extract tiles")
                             }
                             if (extractRequest.returnReference){
                                 tilesList.append(Tile(zoom: tile.zoom, column: tile.column, row: tile.row))
-                                notify(tilesList.count, count)
+                                notify(progress: Int32(tilesList.count), total: count)
                             }
                         }
                         tiles.close()
@@ -112,7 +105,7 @@ public class SwiftFlutterMbtilesExtractorPlugin: NSObject, FlutterPlugin, Flutte
             return ExtractResult(code: 3, data: "MBTiles file does not exist!")
         }
     }
-
+    
     func getMetadataFromReader(reader: MBTilesReader)-> MBTilesMetadata {
         let attribution = reader.getMetadata().getAttribution() ?? ""
         let format = reader.getMetadata().getRequiredKeyValuePairs()["format"] ?? ""
@@ -157,7 +150,7 @@ public class SwiftFlutterMbtilesExtractorPlugin: NSObject, FlutterPlugin, Flutte
     func saveTileIntoFile(schema:Int, filesDir:String, tile:TileData) -> Bool{
         let fileManager = FileManager.default
         let tilePath = "\(filesDir)/\(tile.zoom)/\(tile.column)"
-        let row = (schema == 0 ? tile.row : flip(tile))
+        let row = (schema == 0 ? tile.row : flip(tile: tile))
         let filename = "\(row).png"
         if(!fileManager.fileExists(atPath:tilePath)){
             do {
@@ -171,7 +164,7 @@ public class SwiftFlutterMbtilesExtractorPlugin: NSObject, FlutterPlugin, Flutte
         return fileManager.createFile(atPath: file, contents: tile.data, attributes: nil)
     }
 
-    func flip(tile: TileIterator.Tile): Int {
+    func flip(tile: TileData) -> Int {
         return Int(pow(2.0, Double(tile.zoom)) - 1.0) - tile.row
     }
 }
