@@ -1,12 +1,14 @@
 import Flutter
 import UIKit
 
-public class SwiftFlutterMbtilesExtractorPlugin: NSObject, FlutterPlugin {
+public class SwiftFlutterMbtilesExtractorPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
     
     public static func register(with registrar: FlutterPluginRegistrar) {
-        let channel = FlutterMethodChannel(name: "flutter_mbtiles_extractor", binaryMessenger: registrar.messenger())
+        let methodChannel = FlutterMethodChannel(name: "flutter_mbtiles_extractor", binaryMessenger: registrar.messenger())
         let instance = SwiftFlutterMbtilesExtractorPlugin()
-        registrar.addMethodCallDelegate(instance, channel: channel)
+        registrar.addMethodCallDelegate(instance, channel: methodChannel)
+        let eventChannel = FlutterEventChannel(name:  "flutter_mbtiles_extractor_progress", binaryMessenger: registrar.messenger())
+        eventChannel.setStreamHandler(instance)
     }
     
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -28,8 +30,7 @@ public class SwiftFlutterMbtilesExtractorPlugin: NSObject, FlutterPlugin {
 
     private var sinks: [FlutterEventSink] = []
 
-    public func onListen(withArguments arguments: Any?,
-                           eventSink: @escaping FlutterEventSink) -> FlutterError? {
+    public func onListen(withArguments arguments: Any?, eventSink: @escaping FlutterEventSink) -> FlutterError? {
         sinks.append(eventSink)
         return nil
     }
