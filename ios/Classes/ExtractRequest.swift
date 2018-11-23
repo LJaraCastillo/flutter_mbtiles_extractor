@@ -16,7 +16,7 @@ class ExtractRequest:NSObject{
     let returnReference:Bool
     let schema:Int
 
-    init(pathToDB:String,desiredPath:String,requestPermissions:Bool,removeAfterExtract:Bool,stopOnError:Bool,onlyReference:Bool,returnReference:Bool) {
+    init(pathToDB:String,desiredPath:String,requestPermissions:Bool,removeAfterExtract:Bool,stopOnError:Bool,onlyReference:Bool,returnReference:Bool,schema:Int) {
         self.pathToDB = pathToDB
         self.desiredPath=desiredPath
         self.requestPermissions=requestPermissions
@@ -35,7 +35,7 @@ class ExtractRequest:NSObject{
         let stopOnError:Bool = map["stopOnError"] as! Bool
         let onlyReference:Bool = map["onlyReference"] as! Bool
         let returnReference:Bool = map["returnReference"] as! Bool
-        let schema:Int= map["schema"] as! Bool
+        let schema:Int = map["schema"] as! Int
         return ExtractRequest(
             pathToDB: pathToDB,
             desiredPath: desiredPath,
