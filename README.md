@@ -65,6 +65,21 @@ path to the folder where the tiles are stored.
     }
 ```
 
+Progress can be tracked by registering the following stream 
+```dart
+    StreamSubscription<dynamic> subscription = 
+    MBTilesExtractor.onProgress().listen((dynamic event) {
+        var percent = event['progress'] / event['total'];
+        print("$event, $percent %");
+      });
+   
+   ExtractResult extractResult = await ...
+   
+   subscription?.cancel();
+
+```
+
+
 ## Extra info
 
 This plugin uses the extracted folder to generate a Google Maps like map

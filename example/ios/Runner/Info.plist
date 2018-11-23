@@ -41,5 +41,27 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>UTExportedTypeDeclarations</key>
+    	<array>
+    		<dict>
+    			<key>UTTypeConformsTo</key>
+    			<array>
+    				<string>public.data</string>
+    			</array>
+    			<key>UTTypeDescription</key>
+    			<string>Backup</string>
+    			<key>UTTypeIconFiles</key>
+    			<array/>
+    			<key>UTTypeIdentifier</key>
+    			<string>cl.ceisufro.fluttermbtilesextractor.mbtiles</string>
+    			<key>UTTypeTagSpecification</key>
+    			<dict>
+    				<key>public.filename-extension</key>
+    				<array>
+    					<string>mbtiles</string>
+    				</array>
+    			</dict>
+    		</dict>
+    	</array>
 </dict>
 </plist>
