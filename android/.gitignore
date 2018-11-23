@@ -8,3 +8,6 @@
 /captures
 .idea/
 lib/flutter.jar
+.project
+.classpath
+.settings/

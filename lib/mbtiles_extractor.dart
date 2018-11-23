@@ -18,12 +18,25 @@ class MBTilesExtractor {
   static const EventChannel _eventChannel =
     const EventChannel('flutter_mbtiles_extractor_progress');
 
-
+  /// Stream to receive the progress of the extraction.
+  /// An event is delivered in each update, from this event
+  /// you can get the progress and the total of tiles to extract.
+  /// Example:
+  /// 
+  /// ```dart
+  /// MBTilesExtractor.onProgress().listen((dynamic event) {
+  ///   var percent = event["progress"] / event["total"];
+  ///   //Do stuff with the progress
+  /// });
+  /// ```
   static Stream<dynamic> onProgress() {
 
     return _eventChannel.receiveBroadcastStream();
   }
 
+  /// Make the call to extract the .mbtiles file using the [extractRequest] 
+  /// parameters.
+  /// * [extractRequest] This object is used to configure the extraction behavior.
   static Future<ExtractResult> extractMBTilesFile(
       ExtractRequest extractRequest) async {
 

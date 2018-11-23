@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.0.6
+
+* Added progress callback to the extraction. (Thanks to @kengu)
+* Added documentation to MBTilesExtractor class.
+
 ## 0.0.5
 
 * Added support for XYZ or TMS tile extraction schema. (Thanks to @kengu)
