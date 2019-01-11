@@ -1,3 +1,5 @@
+part of flutter_mbtiles_extractor;
+
 class ExtractRequest {
   ///String path to the *.mbtiles File
   String pathToDB;

@@ -1,3 +1,5 @@
+part of flutter_mbtiles_extractor;
+
 class MBTilesMetadata {
   String attribution;
   String name;

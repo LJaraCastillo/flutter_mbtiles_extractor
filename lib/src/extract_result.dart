@@ -1,5 +1,4 @@
-import 'tile.dart';
-import 'mbtiles_metadata.dart';
+part of flutter_mbtiles_extractor;
 
 class ExtractResult {
   ///The extraction was completed successfully.

@@ -1,14 +1,12 @@
-library mbtiles_extractor;
+library flutter_mbtiles_extractor;
 
 import 'dart:async';
 import 'package:flutter/services.dart';
-import 'package:flutter_mbtiles_extractor/model/extract_request.dart';
-import 'package:flutter_mbtiles_extractor/model/extract_result.dart';
 
-export 'model/tile.dart';
-export 'model/extract_request.dart';
-export 'model/extract_result.dart';
-export 'model/mbtiles_metadata.dart';
+part 'src/tile.dart';
+part 'src/extract_request.dart';
+part 'src/extract_result.dart';
+part 'src/mbtiles_metadata.dart';
 
 class MBTilesExtractor {
 

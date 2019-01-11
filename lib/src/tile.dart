@@ -1,3 +1,5 @@
+part of flutter_mbtiles_extractor;
+
 class Tile {
   ///The corresponding zoom of the tile.
   ///This is the Z axis.
