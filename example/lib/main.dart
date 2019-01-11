@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_document_picker/flutter_document_picker.dart';
-import 'package:flutter_mbtiles_extractor/mbtiles_extractor.dart';
+import 'package:flutter_mbtiles_extractor/flutter_mbtiles_extractor.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
