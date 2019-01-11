@@ -75,15 +75,15 @@ class Executor private constructor(
                 if (!extractRequest.onlyReference) {
                     val filesDir = createMainFolder(dbFile.nameWithoutExtension, extractRequest.desiredPath)
                     if (filesDir != null) {
+                        var tilesExtracted = 0
                         while (tiles.hasNext()) {
                             val tile = tiles.next()
                             if (!saveTileIntoFile(extractRequest.schema, filesDir, tile) && extractRequest.stopOnError)
                                 return ExtractResult(4, "Failed to extract tiles")
                             if (extractRequest.returnReference)
                                 tilesList.add(Tile(tile.zoom, tile.column, tile.row))
-
-                            notify(tilesList.size, count)
-
+                            tilesExtracted++
+                            notify(tilesExtracted, count)
                         }
                         tiles.close()
                         reader.close()

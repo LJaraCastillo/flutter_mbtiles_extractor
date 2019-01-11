@@ -69,6 +69,7 @@ public class SwiftFlutterMbtilesExtractorPlugin: NSObject, FlutterPlugin, Flutte
                     let filename = url?.deletingPathExtension().lastPathComponent
                     let filesDir = createMainFolder(name: filename!, path: extractRequest.desiredPath)
                     if (filesDir != nil) {
+                        var tilesExtracted:Int32 = 0
                         while (tiles.hasNext()) {
                             let tile = tiles.next()
                             if (!saveTileIntoFile(schema: extractRequest.schema, filesDir: filesDir!, tile: tile) && extractRequest.stopOnError){
@@ -76,8 +77,9 @@ public class SwiftFlutterMbtilesExtractorPlugin: NSObject, FlutterPlugin, Flutte
                             }
                             if (extractRequest.returnReference){
                                 tilesList.append(Tile(zoom: tile.zoom, column: tile.column, row: tile.row))
-                                notify(progress: Int32(tilesList.count), total: count)
                             }
+                            tilesExtracted += 1
+                            notify(progress: tilesExtracted, total: count)
                         }
                         tiles.close()
                         reader!.close()
