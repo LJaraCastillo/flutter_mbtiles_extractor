@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.0.7
+
+* Fix: Progress callback now updates the progress even if the reference is not being returned;
+* Updated Android dependencies.
+
 ## 0.0.6
 
 * Added progress callback to the extraction. (Thanks to @kengu)
