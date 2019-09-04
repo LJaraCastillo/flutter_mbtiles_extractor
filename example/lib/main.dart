@@ -44,7 +44,8 @@ class _MyAppState extends State<MyApp> {
                   return Container(
                     child: LinearProgressIndicator(
                       value: progress.value,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.redAccent),
+                      valueColor:
+                          AlwaysStoppedAnimation<Color>(Colors.redAccent),
                     ),
                   );
                 },
@@ -97,7 +98,6 @@ class _MyAppState extends State<MyApp> {
     progress.value = null;
   }
 
-
   Future<void> _extractMBTilesFile() async {
     String result;
     StreamSubscription<dynamic> subscription;
@@ -110,37 +110,35 @@ class _MyAppState extends State<MyApp> {
         _extractionStatus = "Extracting... Please wait!";
         _startProgress();
       });
-      subscription = MBTilesExtractor.onProgress().listen((dynamic event) {
-        var percent = event['progress'] / event['total'];
-        if (percent == 1.0) {
-          _stopProgress();
-        } else {
-          progress.value = percent;
-        }
-        print("$event");
-      });
 
       Directory appDirectory = await getApplicationDocumentsDirectory();
       print(_selectedFile.path);
       ExtractResult extractResult = await MBTilesExtractor.extractMBTilesFile(
-        new ExtractRequest(
-          _selectedFile.path,
-          //This is the name of the file i was testing.
-          desiredPath: appDirectory.path,
-          //Example of final folder
-          requestPermissions: true,
-          //Vital in android
-          removeAfterExtract: false,
-          //Deletes the *.mbtiles file after the extraction is completed
-          stopOnError: true,
-          //Stops is one tile could not be extracted
-          returnReference: true,
-          //Returns the list of tiles once the extraction is completed
-          onlyReference: false,
-          //If true the reference of tiles is returned but the extraction is not performed
-          schema: Schema.XYZ,
-          //Flip y-axis to commonly used xyz (slippy map) tiling format.
-        ),
+        _selectedFile.path,
+        //This is the name of the file i was testing.
+        desiredPath: appDirectory.path,
+        //Example of final folder
+        requestPermissions: true,
+        //Vital in android
+        removeAfterExtract: false,
+        //Deletes the *.mbtiles file after the extraction is completed
+        stopOnError: true,
+        //Stops is one tile could not be extracted
+        returnReference: true,
+        //Returns the list of tiles once the extraction is completed
+        onlyReference: false,
+        //If true the reference of tiles is returned but the extraction is not performed
+        schema: Schema.XYZ,
+        //Progress update callback
+        onProgress: (total, progress) {
+          var percent = progress / total;
+          if (percent == 1.0) {
+            _stopProgress();
+          } else {
+            this.progress.value = percent;
+          }
+          print("Extracion progress: ${(percent * 100).toStringAsFixed(2)}");
+        },
       );
       result = """
       Result Code = ${extractResult.code}
@@ -159,7 +157,6 @@ class _MyAppState extends State<MyApp> {
     });
 
     subscription?.cancel();
-
   }
 
   void _launchFilePicker() async {
