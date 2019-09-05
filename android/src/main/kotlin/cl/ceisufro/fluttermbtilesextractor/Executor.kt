@@ -1,6 +1,6 @@
 package cl.ceisufro.fluttermbtilesextractor
 
-import android.content.Context
+import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.AsyncTask
@@ -14,7 +14,7 @@ import java.io.FileOutputStream
 import java.lang.ref.WeakReference
 
 class Executor private constructor(
-        private var contextReference: WeakReference<Context>,
+        private var activityReference: WeakReference<Activity>,
         private var extractRequest: ExtractRequest,
         private var executionCallback: ExecutionCallback,
         private var sinks: List<EventChannel.EventSink?>
@@ -22,12 +22,12 @@ class Executor private constructor(
 
     companion object {
         fun executeExtractAsync(
-                contextReference: WeakReference<Context>,
+                activityReference: WeakReference<Activity>,
                 extractRequest: ExtractRequest,
                 executionCallback: ExecutionCallback,
                 sinks: MutableList<EventChannel.EventSink?>): Executor {
-            val executor = Executor(contextReference, extractRequest, executionCallback, sinks)
-            executor.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+            val executor = Executor(activityReference, extractRequest, executionCallback, sinks)
+            executor.executeOnExecutor(THREAD_POOL_EXECUTOR)
             return executor
         }
     }
@@ -46,17 +46,19 @@ class Executor private constructor(
         values["total"] = total
         values["progress"] = progress
         sinks.forEach {
-            it?.success(values)
+            activityReference.get()?.runOnUiThread {
+                it?.success(values)
+            }
         }
     }
 
     private fun extractTilesFromFile(): ExtractResult {
-        val context = contextReference.get();
+        val context = activityReference.get();
         if (!Utils.hasPermissions(context!!))
             return ExtractResult(2, "Storage permissions not granted")
         val dbFile = File(extractRequest.pathToDB)
         if (extractRequest.pathToDB.isNotEmpty() && dbFile.exists()) {
-            var count =  0
+            var count = 0
             try {
                 count = getTileCount(dbFile)
             } catch (e: MBTilesReadException) {
@@ -109,7 +111,7 @@ class Executor private constructor(
     }
 
     private fun getTileCount(pathToDB: File): Int {
-        var count =  0
+        var count = 0
         val cnn = SQLHelper.establishConnection(pathToDB)
         val rs = SQLHelper.executeQuery(cnn, "SELECT count(*) FROM tiles")
         while (rs.next()) {
@@ -120,7 +122,7 @@ class Executor private constructor(
     }
 
     private fun getMetadataFromReader(reader: MBTilesReader): MBTilesMetadata? {
-        try{
+        try {
             val attribution = reader.metadata.attribution
             var format = ""
             reader.metadata.requiredKeyValuePairs.forEach {
@@ -144,14 +146,14 @@ class Executor private constructor(
             }
             return MBTilesMetadata(attribution, name, format, version,
                     latitudeSW, longitudeSW, latitudeNE, longitudeNE, zoomMin, zoomMax)
-        }catch(e :Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
         return null;
     }
 
     private fun createMainFolder(filename: String, path: String): File? {
-        val context = contextReference.get();
+        val context = activityReference.get();
         var mainDir = File(path, filename)
         if (path.isEmpty())
             mainDir = File(context!!.getExternalFilesDir(null), filename)

@@ -3,8 +3,8 @@ package cl.ceisufro.fluttermbtilesextractor
 import android.Manifest
 import android.app.Activity
 import android.content.pm.PackageManager
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -18,8 +18,8 @@ import java.lang.ref.WeakReference
 class FlutterMbtilesExtractorPlugin(private val activity: Activity)
     : MethodCallHandler, EventChannel.StreamHandler, PluginRegistry.RequestPermissionsResultListener {
 
-    private val PERMISSION_REQUEST_CODE = 1
-    private lateinit var result: MethodChannel.Result
+    private val permissionRequestCode = 1
+    private lateinit var result: Result
 
     companion object {
 
@@ -82,13 +82,13 @@ class FlutterMbtilesExtractorPlugin(private val activity: Activity)
         }
         if (array.isNotEmpty())
             ActivityCompat.requestPermissions(activity, array.toArray(arrayOf<String>()),
-                    PERMISSION_REQUEST_CODE)
+                    permissionRequestCode)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>?, result: IntArray?): Boolean {
         var granted = false
         when (requestCode) {
-            PERMISSION_REQUEST_CODE -> {
+            permissionRequestCode -> {
                 if (result != null && result.isNotEmpty() && result[0] == PackageManager.PERMISSION_GRANTED) {
                     granted = true
                 }

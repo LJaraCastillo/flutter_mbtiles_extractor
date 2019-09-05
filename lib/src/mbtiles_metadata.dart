@@ -24,7 +24,7 @@ class MBTilesMetadata {
   ///This value is not always present in the .mbtiles files
   double zoomMax;
 
-  ///The minimun zoom to which the map can reach
+  ///The minimum zoom to which the map can reach
   ///
   ///This value is not always present in the .mbtiles files
   double zoomMin;
