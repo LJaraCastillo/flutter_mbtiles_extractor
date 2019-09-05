@@ -114,20 +114,21 @@ class _MyAppState extends State<MyApp> {
       Directory appDirectory = await getApplicationDocumentsDirectory();
       print(_selectedFile.path);
       ExtractResult extractResult = await MBTilesExtractor.extractMBTilesFile(
-        _selectedFile.path,
-        //This is the name of the file i was testing.
+        //Path of the selected file.
+      _selectedFile.path,
+        //Path of the extraction folder.
         desiredPath: appDirectory.path,
-        //Example of final folder
+        //Vital in android.
         requestPermissions: true,
-        //Vital in android
+        //Deletes the *.mbtiles file after the extraction is completed.
         removeAfterExtract: false,
-        //Deletes the *.mbtiles file after the extraction is completed
+        //Stops is one tile could not be extracted.
         stopOnError: true,
-        //Stops is one tile could not be extracted
+        //Returns the list of tiles once the extraction is completed.
         returnReference: true,
-        //Returns the list of tiles once the extraction is completed
+        //If true the reference of tiles is returned but the extraction is not performed.
         onlyReference: false,
-        //If true the reference of tiles is returned but the extraction is not performed
+        //The schema of the mbtiles file.
         schema: Schema.XYZ,
         //Progress update callback
         onProgress: (total, progress) {
@@ -137,7 +138,7 @@ class _MyAppState extends State<MyApp> {
           } else {
             this.progress.value = percent;
           }
-          print("Extracion progress: ${(percent * 100).toStringAsFixed(2)}");
+          print("Extraction progress: ${(percent * 100).toStringAsFixed(2)}");
         },
       );
       result = """
