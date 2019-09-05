@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.0
+
+* Migration to Android X.
+* Updated the Gradle and Kotlin plugins.
+* Updated the progress system.
+* Updated documentation.
+
 ## 0.0.7
 
 * Fix: Progress callback now updates the progress even if the reference is not being returned;
