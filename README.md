@@ -32,15 +32,13 @@ one file.
 
 ```dart
 ExtractResult extractResult = await MBTilesExtractor.extractMBTilesFile(
-        new ExtractRequest(
-          "${dir.path}/volcan_villarica.mbtiles", //This is the name of the file i was testing.
+        "${dir.path}/volcan_villarica.mbtiles", //This is the name of the file i was testing.
           desiredPath: "${dir.path}/tiles/", //Example of final folder
           requestPermissions: true, //This is for Android 6.0+
           removeAfterExtract: true, //Deletes the +.mbtiles file after the extraction is completed
           stopOnError: true, //Stops is one tile could not be extracted
           returnReference: true, //Returns the list of tiles once the extraction is completed
           onlyReference: false, //If true the reference of tiles is returned but the extraction is not performed
-        ),
       );
 ```
 
@@ -65,17 +63,21 @@ path to the folder where the tiles are stored.
     }
 ```
 
-Progress can be tracked by registering the following stream 
+Progress can be tracked adding a callback as follows.
 ```dart
-    StreamSubscription<dynamic> subscription = 
-    MBTilesExtractor.onProgress().listen((dynamic event) {
-        var percent = event['progress'] / event['total'];
-        print("$event, $percent %");
-      });
-   
-   ExtractResult extractResult = await ...
-   
-   subscription?.cancel();
+ExtractResult extractResult = await MBTilesExtractor.extractMBTilesFile(
+        "${dir.path}/volcan_villarica.mbtiles", //This is the name of the file i was testing.
+          desiredPath: "${dir.path}/tiles/", //Example of final folder
+          onProgress: (total, progress) { // Progress callback
+              var percent = progress / total;
+              if (percent == 1.0) {
+                _stopProgress();
+              } else {
+                this.progress.value = percent;
+              }
+              print("Extraction progress: ${(percent * 100).toStringAsFixed(2)}");
+          },
+       );
 
 ```
 
