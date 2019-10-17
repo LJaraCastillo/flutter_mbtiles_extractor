@@ -111,7 +111,7 @@ class _MyAppState extends State<MyApp> {
         _startProgress();
       });
 
-      Directory appDirectory = await getApplicationDocumentsDirectory();
+      Directory appDirectory = await getExternalStorageDirectory();
       print(_selectedFile.path);
       ExtractResult extractResult = await MBTilesExtractor.extractMBTilesFile(
         //Path of the selected file.
@@ -129,7 +129,7 @@ class _MyAppState extends State<MyApp> {
         //If true the reference of tiles is returned but the extraction is not performed.
         onlyReference: false,
         //The schema of the mbtiles file.
-        schema: Schema.XYZ,
+        schema: Schema.TMS,
         //Progress update callback
         onProgress: (total, progress) {
           var percent = progress / total;

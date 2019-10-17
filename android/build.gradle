@@ -39,13 +39,13 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 28
+
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 28
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     lintOptions {
         disable 'InvalidPackage'
@@ -54,7 +54,7 @@ android {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
     /**
      * This lib is used to read the data from the .mbtiles file.
      * https://github.com/fullhdpixel/mbtiles4j
@@ -63,7 +63,5 @@ dependencies {
      */
     implementation files('lib/fullhdpixel-mbtiles4j.jar')
     implementation 'org.sqldroid:sqldroid:1.0.3'
-    implementation 'commons-io:commons-io:2.5'
+    implementation 'commons-io:commons-io:20030203.000550'
 }
-
-apply plugin: 'kotlin-android-extensions'

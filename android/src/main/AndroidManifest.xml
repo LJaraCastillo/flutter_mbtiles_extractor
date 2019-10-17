@@ -1,3 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
-<manifest package="cl.ceisufro.fluttermbtilesextractor">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+package="cl.ceisufro.fluttermbtilesextractor">
 </manifest>
